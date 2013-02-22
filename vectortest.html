@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vector Test</title>	
+	<script type="text/javascript" src="src/game.js"></script>
+	<script type="text/javascript" src="src/vectors.js"></script>
+	<script type="text/javascript" src="src/matrices.js"></script>
+	<script type="text/javascript" src="src/polys.js"></script>
+	<script type="text/javascript" src="src/twodee.js"></script>
+	<script type="text/javascript" src="src/threedee.js"></script>
+	<script>
+		window.onload = function() {
+			canvasApp();
+		}
+
+		function canvasApp() {
+			var canvas = document.getElementById("canvasOne");
+			if (!canvas || !canvas.getContext) {
+				return;
+			}
+
+			var context = canvas.getContext("2d");
+			var running = true;
+
+			var origin = Object.create(game.vectors.Vector2);
+			origin.x = 500;
+			origin.y = 300;
+
+			const FRAMERATE = 30;
+			var intervalTime = 1000/FRAMERATE;
+
+			var v = Object.create(game.polys.twodee.Quad);
+			v.vertices[0].x = 0;
+			v.vertices[0].y = 50;
+			v.vertices[1].x = 200;
+			v.vertices[1].y = 50;
+			v.vertices[2].x = 200;
+			v.vertices[2].y = 0;
+			v.vertices[3].x = 0;
+			v.vertices[3].y = 0;
+
+			var a = Object.create(game.vectors.Vector2);
+			a.x = 0;
+			a.y = 1;
+
+			var projections = [];
+			var projectionLow = 0;
+			var projectionHigh = 0;
+			var drawnProjection;
+			var projectionOrigin = Object.create(game.vectors.Vector2);
+			projectionOrigin.x = origin.x + 400;
+			projectionOrigin.y = origin.y;
+
+			var mousePosition = Object.create(game.vectors.Vector2);
+			var mouseText = " , ";
+
+			var turnClockwise = false;
+			var turnCoClockwise = false;
+
+			setInterval(update, intervalTime);
+
+			function update() {
+				if (turnClockwise) {
+					v.rotate(-2);
+				}
+				if (turnCoClockwise) {
+					v.rotate(2);
+				}
+
+				for (var i = 0; i < v.vertices.length; i++ ){
+					projections[i] = v.vertices[i].project(a);
+				}
+				projectionLow = projections[0];
+				projectionHigh = projections[0];
+				for (var i = 0; i < projections.length; i++) {
+					var thisProjLength = projections[i].length();
+					if (thisProjLength < projectionLow.length()) {
+						projectionLow = projections[i];
+					}
+					if (thisProjLength > projectionHigh.length()) {
+						projectionHigh = projections[i];
+					}
+				}
+				drawnProjection = projectionHigh.subtract(projectionLow);
+				drawScreen();
+			}
+
+			function drawScreen() {
+				context.clearRect(0, 0, 1000, 600);
+
+				context.strokeStyle = "black";
+				context.lineWidth = 10;
+				context.lineCap = "square";
+				context.beginPath();
+				context.moveTo(origin.x, origin.y);
+				context.lineTo(origin.x + v.vertices[0].x, origin.y + v.vertices[0].y);
+				context.lineTo(origin.x + v.vertices[1].x, origin.y + v.vertices[1].y);
+				context.lineTo(origin.x + v.vertices[2].x, origin.y + v.vertices[2].y);
+				context.lineTo(origin.x + v.vertices[3].x, origin.y + v.vertices[3].y);
+				context.stroke();
+				context.closePath();
+
+				// draw quad projection on y-axis unit vector
+				context.strokeStyle = "red";
+				context.beginPath();
+				context.moveTo(projectionOrigin.x, projectionOrigin.y);
+				context.lineTo(projectionOrigin.x + drawnProjection.x,
+							   projectionOrigin.y + drawnProjection.y);
+				context.stroke();
+				context.closePath();
+
+				drawString(mouseText, mousePosition);
+			}
+
+			function drawString(string, position) {
+				context.font = "18pt Calibri";
+				context.fillStyle = "black";
+				context.fillText(string, position.x, position.y);
+			}
+
+			document.addEventListener("keydown", function(e) {
+				if (e.keyCode == 69) {
+					turnCoClockwise = true;
+				}
+				if (e.keyCode == 81) {
+					turnClockwise = true;
+				}
+			});
+
+			document.addEventListener("keyup", function(e) {
+				if (e.keyCode == 69) {
+					turnCoClockwise = false;
+				}
+				if (e.keyCode == 81) {
+					turnClockwise = false;
+				}
+			});
+
+			document.addEventListener("mousemove", function(e) {
+				mouseText = e.clientX + ', ' + e.clientY;
+				mousePosition.x = e.clientX - 50;
+				mousePosition.y = e.clientY - 50;
+			});
+		}
+	</script>
+</head>
+<body>
+	<div style="position: absolute; top: 50px; left: 50px;">
+		<canvas id="canvasOne" width="1000" height="600">
+			Your browser does not support HTML5 Canvas
+		</canvas>
+	</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="5" height="5" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="blocks" tilewidth="64" tileheight="64">
+  <image source="grayblock.jpg" trans="ff00ff" width="64" height="64"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="5" height="5">
+  <data encoding="csv">
+0,0,1,0,0,
+0,0,1,1,1,
+0,0,1,0,0,
+1,1,1,1,0,
+0,0,0,0,0
+</data>
+ </layer>
+</map>

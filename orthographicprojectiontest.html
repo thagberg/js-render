@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Framework</title>	
+	<script type="text/javascript" src="src/game.js"></script>
+	<script type="text/javascript" src="src/vectors.js"></script>
+	<script type="text/javascript" src="src/matrices.js"></script>
+	<script type="text/javascript" src="src/polys.js"></script>
+	<script type="text/javascript" src="src/twodee.js"></script>
+	<script type="text/javascript" src="src/threedee.js"></script>
+	<script type="text/javascript" src="src/draw.js"></script>
+	<script>
+		window.onload = function() {
+			canvasApp();
+		}
+
+		function canvasApp() {
+			var canvas = document.getElementById("canvasOne");
+			if (!canvas || !canvas.getContext) {
+				return;
+			}
+
+			var context = canvas.getContext("2d");
+			var width = 1000;
+			var height = 600;
+
+			var imageData = context.createImageData(width, height);
+
+			const FRAMERATE = 60;
+			var intervalTime = 1000/FRAMERATE;
+			var fpsPosition = game.vectors.newVector3(500, 200, 0);
+
+			quad = game.polys.threedee.newQuad([
+				game.vectors.newVector3(100,100,20),
+				game.vectors.newVector3(300,100,20),
+				game.vectors.newVector3(300,400,20),
+				game.vectors.newVector3(100,400,20)]);
+
+			backQuad = game.polys.threedee.newQuad([
+				game.vectors.newVector3(100,100,60),
+				game.vectors.newVector3(300,100,60),
+				game.vectors.newVector3(300,400,60),
+				game.vectors.newVector3(100,400,60)]);
+
+			var mU = game.vectors.newVector3(0,-2,0);
+			var mL = game.vectors.newVector3(-2,0,0);
+			var mR = game.vectors.newVector3(2,0,0);
+			var mD = game.vectors.newVector3(0,2,0);
+
+			var turnClockwise = false;
+			var turnCoClockwise = false;
+			var rotateUp = false;
+			var rotateDown = false;
+			var moveLeft = false;
+			var moveRight = false;
+			var moveUp = false;
+			var moveDown = false;
+
+			setInterval(update, intervalTime);
+			var lastLoop = new Date;
+			var fps;
+
+			var testColor = {
+				red: 255,
+				blue: 0,
+				gree: 0,
+				alpha: 255
+			};
+
+			function update() {
+				var thisLoop = new Date;
+				fps = Math.round(1000 / (thisLoop - lastLoop));
+				if (turnClockwise) {
+					quad.rotateY(-2);
+					backQuad.rotateY(-2);
+				}
+				if (turnCoClockwise) {
+					quad.rotateY(2);
+					backQuad.rotateY(2);
+				}
+				if (rotateUp) {
+					quad.rotateX(2);
+					backQuad.rotateX(2);
+				}
+				if (rotateDown) {
+					quad.rotateX(-2);
+					backQuad.rotateX(-2);
+				}
+				if (moveLeft) {
+					quad.translate(mL);
+					backQuad.translate(mL);
+				}
+				if (moveUp) {
+					quad.translate(mU);
+					backQuad.translate(mU);
+				}
+				if (moveRight) {
+					quad.translate(mR);
+					backQuad.translate(mR);
+				}
+				if (moveDown) {
+					quad.translate(mD);
+					backQuad.translate(mD);
+				}
+
+
+				drawScreen();
+				lastLoop = thisLoop;
+			}
+
+			function drawScreen() {
+				// clear screen
+				/*for (var i = 0; i < imageData.data.length; i += 4) {
+					imageData.data[i] = 0;
+					imageData.data[i + 1] = 0;
+					imageData.data[i + 2] = 0;
+					imageData.data[i + 3] = 255;
+				}*/
+				context.clearRect(0,0,width,height);
+				imageData = context.createImageData(width, height);
+
+				// draw vertices
+				for (var i = 0; i < quad.vertices.length; i++) {
+					var x = Math.round(quad.vertices[i].x);
+					var y = Math.round(quad.vertices[i].y);
+					var z = Math.round(quad.vertices[i].z);
+					var pixelIndex = 4 * (x + y * width);
+					imageData.data[pixelIndex] = 255;
+					imageData.data[pixelIndex+3] = 255;
+				}
+				for (var i = 0; i < backQuad.vertices.length; i++) {
+					var x = Math.round(backQuad.vertices[i].x);
+					var y = Math.round(backQuad.vertices[i].y);
+					var z = Math.round(backQuad.vertices[i].z);
+					var pixelIndex = 4 * (x + y * width);
+					imageData.data[pixelIndex] = 255;
+					imageData.data[pixelIndex+3] = 255;
+				}
+
+				// draw lines connecting vertices
+				game.draw.drawLine2D(imageData, quad.vertices[0], quad.vertices[1], testColor);
+				game.draw.drawLine2D(imageData, quad.vertices[0], quad.vertices[3], testColor);
+				game.draw.drawLine2D(imageData, quad.vertices[1], quad.vertices[2], testColor);
+				game.draw.drawLine2D(imageData, quad.vertices[3], quad.vertices[2], testColor);
+				game.draw.drawLine2D(imageData, backQuad.vertices[0], backQuad.vertices[1], testColor);
+				game.draw.drawLine2D(imageData, backQuad.vertices[0], backQuad.vertices[3], testColor);
+				game.draw.drawLine2D(imageData, backQuad.vertices[1], backQuad.vertices[2], testColor);
+				game.draw.drawLine2D(imageData, backQuad.vertices[3], backQuad.vertices[2], testColor);
+				game.draw.drawLine2D(imageData, quad.vertices[0], backQuad.vertices[0], testColor);
+				game.draw.drawLine2D(imageData, quad.vertices[1], backQuad.vertices[1], testColor);
+				game.draw.drawLine2D(imageData, quad.vertices[3], backQuad.vertices[3], testColor);
+				game.draw.drawLine2D(imageData, quad.vertices[2], backQuad.vertices[2], testColor);
+
+				context.putImageData(imageData, 0, 0);
+
+				drawString(fps, fpsPosition);
+			}
+
+			function drawString(string, position) {
+				context.font = "18pt Calibri";
+				context.fillStyle = "red";
+				context.fillText(string, position.x, position.y);
+			}
+
+			document.addEventListener("keydown", function(e) {
+				if (e.keyCode == 69) {
+					turnClockwise = true;
+				}
+				if (e.keyCode == 81) {
+					turnCoClockwise = true;
+				}
+				if (e.keyCode == 90) {
+					rotateUp = true;
+				}
+				if (e.keyCode == 67) {
+					rotateDown = true;
+				}
+				if (e.keyCode == 37) {
+					moveLeft = true;
+				}
+				if (e.keyCode == 38) {
+					moveUp = true;
+				}
+				if (e.keyCode == 39) {
+					moveRight = true;
+				}
+				if (e.keyCode == 40) {
+					moveDown = true;
+				}
+			});
+
+			document.addEventListener("keyup", function(e) {
+				if (e.keyCode == 69) {
+					turnClockwise = false;
+				}
+				if (e.keyCode = 81) {
+					turnCoClockwise = false;
+				}
+				if (e.keyCode = 90) {
+					rotateUp = false;
+				}
+				if (e.keyCode = 67) {
+					rotateDown = false;
+				}
+				if (e.keyCode == 37) {
+					moveLeft = false;
+				}
+				if (e.keyCode == 38) {
+					moveUp = false;
+				}
+				if (e.keyCode == 39) {
+					moveRight = false;
+				}
+				if (e.keyCode == 40) {
+					moveDown = false;
+				}
+			});
+		}
+	</script>
+</head>
+<body>
+	<div style="position: absolute; top:50px; left:50px;">
+		<canvas id="canvasOne" width="1000" height="600">
+			Your browser does not support HTML5 Canvas
+		</canvas>
+	</div>
+</body>
+</html>
