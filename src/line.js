@@ -3,6 +3,12 @@ var line = namespace('game.line');
 line.Line2D = {
 	pointOfIntersect: function(l2) {
 		var poi = game.vectors.newVector2(0,0);
+	},
+
+	solveForX: function(y) {
+		// y = mx + b
+		y = y - this.b; // mx = y - b
+		return y / this.m; // x = (y-b)/m
 	}
 };
 
@@ -12,6 +18,8 @@ line.newLine2D = function(p1, p2) {
 	l.length = v.length();
 	l.m = v.y / v.x;
 	l.b = p1.y - (l.m * p1.x);
+	l.p1 = p1;
+	l.p2 = p2;
 
 	return l;
 };

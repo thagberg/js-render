@@ -65,5 +65,64 @@ draw.drawLine2D = function(imageData, point1, point2, color) {
  * into camera space and visible
  */
 draw.fillPoly = function(imageData, poly, color) {
+	// loop over each "row" of the imageData pixel array
+	for (var i = 0; i < imageData.height; i += imageData.width) {
 
+	}
+};
+
+
+draw.fillTri = function(imageData, tri, color) {
+	// first create edge list
+	var edges = tri.getEdges();
+
+	// draw from edges[0] to edges[1]
+	var l1, l2;
+	var numSpans;
+	var spans = [];
+
+	l1 = game.line.newLine2D(edges[0].p1, edges[0].p2);
+	l2 = game.line.newLine2D(edges[1].p1, edges[1].p2);
+	numSpans = l2.p2.y - l2.p1.y;
+
+	// loop over the spans and draw the pixels
+	for (var i = 0; i < numSpans; i++) {
+		var spanLength = 0;
+		var x1, x2;
+		var y = l2.p2.y + i;
+		x1 = Math.round(l1.solveForX(l2.p2.y-0));
+		x2 = Math.round(l2.solveForX(l2.p2.y-0));
+		spanLength = x2-x1;
+		spans[i] = spanLength;
+
+		for (var j = x1; j <= x2; j++ ) {
+			var pixelIndex = 4 * (j + y * imageData.width);
+			imageData.data[pixelIndex] = color.red;
+			imageData.data[pixelIndex+1] = color.blue;
+			imageData.data[pixelIndex+2] = color.green;
+			imageData.data[pixelIndex+3] = color.alpha;
+		}
+	}
+
+	l2 = game.line.newLine2D(edges[2].p1, edges[2].p2);
+	numSpans = l2.p2.y - l2.p1.y;
+	
+	// loop over the spans and draw the pixels
+	for (var i = 0; i < numSpans; i++) {
+		var spanLength = 0;
+		var x1, x2;
+		var y = l2.p2.y + i;
+		x1 = Math.round(l1.solveForX(l2.p2.y-0));
+		x2 = Math.round(l2.solveForX(l2.p2.y-0));
+		spanLength = x2-x1;
+		spans[i] = spanLength;
+
+		for (var j = x1; j <= x2; j++ ) {
+			var pixelIndex = 4 * (j + y * imageData.width);
+			imageData.data[pixelIndex] = color.red;
+			imageData.data[pixelIndex+1] = color.blue;
+			imageData.data[pixelIndex+2] = color.green;
+			imageData.data[pixelIndex+3] = color.alpha;
+		}
+	}
 };

@@ -96,11 +96,10 @@ vectors.Vector2 = {
 	}
 };
 
-vectors.newVector2 = function() {
+vectors.newVector2 = function(x, y) {
 	var v = Object.create(game.vectors.Vector2);
-	v.x = 0;
-	v.y = 0;
-	v.z = 0;
+	v.x = x || 0;
+	v.y = y || 0;
 
 	return v;
 };
