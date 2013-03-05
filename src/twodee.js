@@ -53,7 +53,7 @@ twodee.Tri = {
 
         // sort based on vertical magnitude
         this.edges.sort(function(a,b) {
-            return Math.abs(a.p1.y - a.p2.y) >
+            return Math.abs(a.p1.y - a.p2.y) <
                       Math.abs(b.p1.y - b.p2.y);
         });
         return this.edges;

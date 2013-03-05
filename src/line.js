@@ -8,7 +8,7 @@ line.Line2D = {
 	solveForX: function(y) {
 		// y = mx + b
 		y = this.b ? y - this.b : y; // mx = y - b
-		return this.m ? y / this.m : y; // x = (y-b)/m
+		return (this.m && this.m != Infinity) ? y / this.m : y; // x = (y-b)/m
 	}
 };
 

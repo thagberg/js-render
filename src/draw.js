@@ -88,25 +88,28 @@ draw.fillTri = function(imageData, tri, color) {
 	// loop over the spans and draw the pixels
 	for (var i = 0; i < numSpans; i++) {
 		var spanLength = 0;
-		var x1, x2;
+		var x1, x2, temp;
 		var y = l2.p2.y + i;
-		x1 = Math.round(l1.solveForX(l2.p2.y-0));
-		x2 = Math.round(l2.solveForX(l2.p2.y-0));
+		x1 = Math.round(l1.solveForX(y));
+		x2 = Math.round(l2.solveForX(y));
+		temp = x1;
+		x1 = x1 <= x2 ? x1 : x2;
+		x2 = temp <= x2 ? x2 : temp;
 		spanLength = x2-x1;
 		spans[i] = spanLength;
 
 		for (var j = x1; j <= x2; j++ ) {
 			var pixelIndex = 4 * (j + y * imageData.width);
 			imageData.data[pixelIndex] = color.red;
-			imageData.data[pixelIndex+1] = color.blue;
-			imageData.data[pixelIndex+2] = color.green;
+			imageData.data[pixelIndex+1] = color.green;
+			imageData.data[pixelIndex+2] = color.blue;
 			imageData.data[pixelIndex+3] = color.alpha;
 		}
 	}
 
 	l2 = game.line.newLine2D(edges[2].p1, edges[2].p2);
 	numSpans = l2.p2.y - l2.p1.y;
-	
+
 	// loop over the spans and draw the pixels
 	for (var i = 0; i < numSpans; i++) {
 		var spanLength = 0;
@@ -120,8 +123,8 @@ draw.fillTri = function(imageData, tri, color) {
 		for (var j = x1; j <= x2; j++ ) {
 			var pixelIndex = 4 * (j + y * imageData.width);
 			imageData.data[pixelIndex] = color.red;
-			imageData.data[pixelIndex+1] = color.blue;
-			imageData.data[pixelIndex+2] = color.green;
+			imageData.data[pixelIndex+1] = color.green;
+			imageData.data[pixelIndex+2] = color.blue;
 			imageData.data[pixelIndex+3] = color.alpha;
 		}
 	}

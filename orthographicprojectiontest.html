@@ -49,10 +49,21 @@
 				game.vectors.newVector2(250,250),
 				game.vectors.newVector2(150,250)]);
 
+			colorTri2 = game.polys.twodee.newTri([
+				game.vectors.newVector2(500, 200),
+				game.vectors.newVector2(700, 300),
+				game.vectors.newVector2(500, 600)]);
+
 			var triColor = {
 				red: 0,
 				blue: 255,
 				green: 0,
+				alpha: 255
+			};
+			var triColor2 = {
+				red: 0,
+				blue: 0,
+				green: 255,
 				alpha: 255
 			};
 
@@ -168,6 +179,7 @@
 
 				// color the test tri
 				game.draw.fillTri(imageData, colorTri, triColor);
+				game.draw.fillTri(imageData, colorTri2, triColor);
 
 				context.putImageData(imageData, 0, 0);
 
