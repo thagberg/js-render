@@ -6,6 +6,10 @@ line.Line2D = {
 	},
 
 	solveForX: function(y) {
+		if (this.m == Infinity) { // undefined slope
+			return this.p1.x;
+		}
+
 		// y = mx + b
 		y = this.b ? y - this.b : y; // mx = y - b
 		return (this.m && this.m != Infinity) ? y / this.m : y; // x = (y-b)/m

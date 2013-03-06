@@ -34,7 +34,7 @@ twodee.Tri = {
     },
 
     translate: function(v2) {
-        for (var i = 0; i < this.vertices.lenghth; i++) {
+        for (var i = 0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].translate(v2);
         }
     },
@@ -51,6 +51,21 @@ twodee.Tri = {
                         twodee.newEdge(this.vertices[2], this.vertices[0]) :
                         twodee.newEdge(this.vertices[0], this.vertices[2]);
 
+        // round the edges off
+        // TODO: clean up this horrible pile of shit going on here
+        this.edges[0].p1.x = Math.round(this.edges[0].p1.x);
+        this.edges[0].p1.y = Math.round(this.edges[0].p1.y);
+        this.edges[0].p2.x = Math.round(this.edges[0].p2.x);
+        this.edges[0].p2.y = Math.round(this.edges[0].p2.y);
+        this.edges[1].p1.x = Math.round(this.edges[1].p1.x);
+        this.edges[1].p1.y = Math.round(this.edges[1].p1.y);
+        this.edges[1].p2.x = Math.round(this.edges[1].p2.x);
+        this.edges[1].p2.y = Math.round(this.edges[1].p2.y);
+        this.edges[2].p1.x = Math.round(this.edges[2].p1.x);
+        this.edges[2].p1.y = Math.round(this.edges[2].p1.y);
+        this.edges[2].p2.x = Math.round(this.edges[2].p2.x);
+        this.edges[2].p2.y = Math.round(this.edges[2].p2.y);
+
         // sort based on vertical magnitude
         this.edges.sort(function(a,b) {
             return Math.abs(a.p1.y - a.p2.y) <
@@ -66,9 +81,11 @@ twodee.newTri = function(vertArr) {
     if (vertArr) {
         t.vertices = vertArr;
     } else {
-        t.vertices = [Object.create(game.vectors.Vector2),
-                      Object.create(game.vectors.Vector2),
-                      Object.create(game.vectors.Vector2)];
+        t.vertices = [
+            game.vectors.newVector2(),
+            game.vectors.newVector2(),
+            game.vectors.newVector2()
+        ];
     }
 
     return t;

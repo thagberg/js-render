@@ -1,6 +1,10 @@
 var matrices = namespace('game.matrices');
 
 matrices.Matrix2D = {
+
+	getColumnVector: function(colIndex) {
+		return game.vectors.newVector2(this.i[colIndex], this.j[colIndex]);
+	}
 };
 
 matrices.Matrix2DIdentity = function() {

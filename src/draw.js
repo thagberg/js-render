@@ -89,7 +89,7 @@ draw.fillTri = function(imageData, tri, color) {
 	for (var i = 0; i < numSpans; i++) {
 		var spanLength = 0;
 		var x1, x2, temp;
-		var y = l2.p2.y + i;
+		var y = l2.p2.y - i;
 		x1 = Math.round(l1.solveForX(y));
 		x2 = Math.round(l2.solveForX(y));
 		temp = x1;
@@ -113,10 +113,13 @@ draw.fillTri = function(imageData, tri, color) {
 	// loop over the spans and draw the pixels
 	for (var i = 0; i < numSpans; i++) {
 		var spanLength = 0;
-		var x1, x2;
-		var y = l2.p2.y + i;
-		x1 = Math.round(l1.solveForX(l2.p2.y-0));
-		x2 = Math.round(l2.solveForX(l2.p2.y-0));
+		var x1, x2, temp;
+		var y = l2.p2.y - i;
+		x1 = Math.round(l1.solveForX(y));
+		x2 = Math.round(l2.solveForX(y));
+		temp = x1;
+		x1 = x1 <= x2 ? x1 : x2;
+		x2 = temp <= x2 ? x2 : temp;
 		spanLength = x2-x1;
 		spans[i] = spanLength;
 

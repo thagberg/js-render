@@ -4,7 +4,6 @@ threedee.Quad = {
 	//vertices: [],
 
     rotateX: function(theta) {
-        var q = Object.create(game.polys.threedee.Quad);
 
     	for (var i = 0; i < this.vertices.length; i++) {
     		this.vertices[i] = this.vertices[i].rotateX(theta);
@@ -54,43 +53,25 @@ threedee.Tri = {
 			   Object.create(game.vectors.Vector3),
 			   Object.create(game.vectors.Vector3)],
 
-    rotateX: function(theta, v3) {
-    	if (v3) {
-    		this.translate(v3);
-    	}
+    rotateX: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
     		this.vertices[i] = this.vertices[i].rotateX(theta);
     	}
-        if (v3) {
-            this.translate(v3.scalarMult(-1));
-        }
     },
 
-    rotateY: function(theta, v3) {
-    	if (v3) {
-    		this.translate(v3);
-    	}
+    rotateY: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
     		this.vertices[i] = this.vertices[i].rotateY(theta);
     	}
-        if (v3) {
-            this.translate(v3.scalarMult(-1));
-        }
     },
 
-    rotateZ: function(theta, v3) {
-    	if (v3) {
-    		this.translate(v3);
-    	}
+    rotateZ: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
     		this.vertices[i] = this.vertices[i].rotateZ(theta);
     	}
-        if (v3) {
-            this.translate(v3.scalarMult(-1));
-        }
     },
 
-    rotateArb: function(theta, axis, v3) {
+    rotateArb: function(theta, axis) {
 
     },
 
@@ -99,4 +80,20 @@ threedee.Tri = {
     		this.vertices[i] = this.vertices[i].translate(v3);
     	}
     }
+};
+
+threedee.newTri = function(vertArr) {
+    var t = Object.create(game.polys.threedee.Tri);
+
+    if (vertArr) {
+        t.vertices = vertArr;
+    } else {
+        t.vertices = [
+            game.vectors.newVector3(),
+            game.vectors.newVector3(),
+            game.vectors.newVector3()
+        ];
+    }
+
+    return t;
 };

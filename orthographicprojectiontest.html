@@ -80,6 +80,8 @@
 			var moveRight = false;
 			var moveUp = false;
 			var moveDown = false;
+			var triClockwise = false;
+			var triCoClockwise = false;
 
 			setInterval(update, intervalTime);
 			var lastLoop = new Date;
@@ -114,18 +116,28 @@
 				if (moveLeft) {
 					quad.translate(mL);
 					backQuad.translate(mL);
+					colorTri.translate(mL);
 				}
 				if (moveUp) {
 					quad.translate(mU);
 					backQuad.translate(mU);
+					colorTri.translate(mU);
 				}
 				if (moveRight) {
 					quad.translate(mR);
 					backQuad.translate(mR);
+					colorTri.translate(mR);
 				}
 				if (moveDown) {
 					quad.translate(mD);
 					backQuad.translate(mD);
+					colorTri.translate(mD);
+				}
+				if (triClockwise) {
+					colorTri.rotate(-2);
+				}
+				if (triCoClockwise) {
+					colorTri.rotate(2);
 				}
 
 
@@ -179,7 +191,7 @@
 
 				// color the test tri
 				game.draw.fillTri(imageData, colorTri, triColor);
-				game.draw.fillTri(imageData, colorTri2, triColor);
+				game.draw.fillTri(imageData, colorTri2, triColor2);
 
 				context.putImageData(imageData, 0, 0);
 
@@ -195,9 +207,11 @@
 			document.addEventListener("keydown", function(e) {
 				if (e.keyCode == 69) {
 					turnClockwise = true;
+					triClockwise = true;
 				}
 				if (e.keyCode == 81) {
 					turnCoClockwise = true;
+					triCoClockwise = true;
 				}
 				if (e.keyCode == 90) {
 					rotateUp = true;
@@ -217,19 +231,27 @@
 				if (e.keyCode == 40) {
 					moveDown = true;
 				}
+				if (e.keyCode == 74) {
+					triCoClockwise = true;
+				}
+				if (e.keyCode == 76) {
+					triClockwise = true;
+				}
 			});
 
 			document.addEventListener("keyup", function(e) {
 				if (e.keyCode == 69) {
 					turnClockwise = false;
+					triClockwise = false;
 				}
-				if (e.keyCode = 81) {
+				if (e.keyCode == 81) {
 					turnCoClockwise = false;
+					triCoClockwise = false;
 				}
-				if (e.keyCode = 90) {
+				if (e.keyCode == 90) {
 					rotateUp = false;
 				}
-				if (e.keyCode = 67) {
+				if (e.keyCode == 67) {
 					rotateDown = false;
 				}
 				if (e.keyCode == 37) {
@@ -243,6 +265,12 @@
 				}
 				if (e.keyCode == 40) {
 					moveDown = false;
+				}
+				if (e.keyCode == 74) {
+					triCoClockwise = false;
+				}
+				if (e.keyCode == 76) {
+					triClockwise = false;
 				}
 			});
 		}

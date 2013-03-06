@@ -25,19 +25,9 @@ vectors.Vector2 = {
 
 	rotate: function(theta) {
 		var R = game.matrices.Matrix2DRotation(theta * (Math.PI/180));
-		var R1 = Object.create(game.vectors.Vector2);
-		var R2 = Object.create(game.vectors.Vector2);
-		var rotated = Object.create(game.vectors.Vector2); 
-		R1.x = R.i[0];
-		R1.y = R.j[0];
-		rotated.x = this.dotProduct(R1);
-		R2.x = R.i[1];
-		R2.y = R.j[1];
-		rotated.y = this.dotProduct(R2);
+		var rotated = this.matMult(R);
 
-		this.x = rotated.x;
-		this.y = rotated.y;
-		return this;
+		return rotated;
 	},
 
 	length: function() {
@@ -93,7 +83,12 @@ vectors.Vector2 = {
 		v.y = Math.round(this.y);
 
 		return v;
-	}
+	},
+
+	matMult: function(m) {
+		return game.vectors.newVector2(this.dotProduct(m.getColumnVector('x')),
+									   this.dotProduct(m.getColumnVector('y')));
+	},
 };
 
 vectors.newVector2 = function(x, y) {
