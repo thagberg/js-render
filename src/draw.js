@@ -89,7 +89,7 @@ draw.fillTri = function(imageData, tri, color) {
 	for (var i = 0; i < numSpans; i++) {
 		var spanLength = 0;
 		var x1, x2, temp;
-		var y = l2.p2.y - i;
+		var y = Math.round(l2.p2.y - i);
 		x1 = Math.round(l1.solveForX(y));
 		x2 = Math.round(l2.solveForX(y));
 		temp = x1;
@@ -98,6 +98,18 @@ draw.fillTri = function(imageData, tri, color) {
 		spanLength = x2-x1;
 		spans[i] = spanLength;
 
+		//TODO: add per-vector color and interpolation
+		/*for (var j = x1; j <= x2; j++) {
+			var color = {
+				r: 0,
+				g: 0,
+				b: 0
+			};	
+			var v = game.vectors.nweVector2(j, y);
+			v = v.subtract(tri.vertices[0]);
+			var l = v.length();
+			color.r = tri.vertices[0].color.red/l * 
+		}*/
 		for (var j = x1; j <= x2; j++ ) {
 			var pixelIndex = 4 * (j + y * imageData.width);
 			imageData.data[pixelIndex] = color.red;

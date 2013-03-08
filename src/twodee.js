@@ -51,27 +51,28 @@ twodee.Tri = {
                         twodee.newEdge(this.vertices[2], this.vertices[0]) :
                         twodee.newEdge(this.vertices[0], this.vertices[2]);
 
-        // round the edges off
-        // TODO: clean up this horrible pile of shit going on here
-        this.edges[0].p1.x = Math.round(this.edges[0].p1.x);
-        this.edges[0].p1.y = Math.round(this.edges[0].p1.y);
-        this.edges[0].p2.x = Math.round(this.edges[0].p2.x);
-        this.edges[0].p2.y = Math.round(this.edges[0].p2.y);
-        this.edges[1].p1.x = Math.round(this.edges[1].p1.x);
-        this.edges[1].p1.y = Math.round(this.edges[1].p1.y);
-        this.edges[1].p2.x = Math.round(this.edges[1].p2.x);
-        this.edges[1].p2.y = Math.round(this.edges[1].p2.y);
-        this.edges[2].p1.x = Math.round(this.edges[2].p1.x);
-        this.edges[2].p1.y = Math.round(this.edges[2].p1.y);
-        this.edges[2].p2.x = Math.round(this.edges[2].p2.x);
-        this.edges[2].p2.y = Math.round(this.edges[2].p2.y);
-
         // sort based on vertical magnitude
         this.edges.sort(function(a,b) {
             return Math.abs(a.p1.y - a.p2.y) <
                       Math.abs(b.p1.y - b.p2.y);
         });
         return this.edges;
+    },
+
+    area: function() {
+        var a = game.line.newLine2D(this.vertices[0],this.vertices[1]).length;
+        var b = game.line.newLine2D(this.vertices[1],this.vertices[2]).length;
+        var c = game.line.newLine2D(this.vertices[2],this.vertices[0]).length;
+
+        // c^2 = a^2 + b^2 - 2abCos(C)
+        // 2abCos(C) = a^2 + b^2 - c^2
+        // Cos(C) = (a^2 + b^2 - c^2) / 2ab
+        var cosC = (Math.pow(a,2) + Math.pow(b, 2) - Math.pow(c,2)) /
+                        (2 * a * b);
+        var C = Math.cos(cosC);
+        var A = 0.5 * a * b * Math.sin(C);
+
+        return A;
     }
 };
 
