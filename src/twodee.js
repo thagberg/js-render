@@ -29,13 +29,25 @@ twodee.Tri = {
 
     rotate: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
+            if (this.vertices[i].color) {
+                var c = this.vertices[i].color;
+            }
     		this.vertices[i] = this.vertices[i].rotate(theta);
+            if (c) {
+                this.vertices[i].color = c;
+            }
     	}
     },
 
     translate: function(v2) {
         for (var i = 0; i < this.vertices.length; i++) {
+            if (this.vertices[i].color) {
+                var c = this.vertices[i].color;
+            }
             this.vertices[i] = this.vertices[i].translate(v2);
+            if (c) {
+                this.vertices[i].color = c;
+            }
         }
     },
 
@@ -50,6 +62,14 @@ twodee.Tri = {
         this.edges[2] = this.vertices[2].y < this.vertices[0].y ?
                         twodee.newEdge(this.vertices[2], this.vertices[0]) :
                         twodee.newEdge(this.vertices[0], this.vertices[2]);
+
+        // round off the points
+        for (var i = 0; i < this.edges.length; i++) {
+            this.edges[i].p1.x = Math.round(this.edges[i].p1.x);
+            this.edges[i].p1.y = Math.round(this.edges[i].p1.y);
+            this.edges[i].p2.x = Math.round(this.edges[i].p2.x);
+            this.edges[i].p2.y = Math.round(this.edges[i].p2.y);
+        }
 
         // sort based on vertical magnitude
         this.edges.sort(function(a,b) {

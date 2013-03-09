@@ -72,14 +72,14 @@ draw.fillPoly = function(imageData, poly, color) {
 };
 
 
-draw.fillTri = function(imageData, tri, color) {
+draw.fillTri = function(imageData, tri) {
 	// first create edge list
 	var edges = tri.getEdges();
 
 	// draw from edges[0] to edges[1]
 	var l1, l2;
 	var numSpans;
-	var spans = [];
+	var triArea = tri.area();
 
 	l1 = game.line.newLine2D(edges[0].p1, edges[0].p2);
 	l2 = game.line.newLine2D(edges[1].p1, edges[1].p2);
@@ -89,28 +89,55 @@ draw.fillTri = function(imageData, tri, color) {
 	for (var i = 0; i < numSpans; i++) {
 		var spanLength = 0;
 		var x1, x2, temp;
-		var y = Math.round(l2.p2.y - i);
+		var y = l2.p2.y - i;
 		x1 = Math.round(l1.solveForX(y));
 		x2 = Math.round(l2.solveForX(y));
 		temp = x1;
 		x1 = x1 <= x2 ? x1 : x2;
 		x2 = temp <= x2 ? x2 : temp;
 		spanLength = x2-x1;
-		spans[i] = spanLength;
 
 		//TODO: add per-vector color and interpolation
-		/*for (var j = x1; j <= x2; j++) {
-			var color = {
-				r: 0,
-				g: 0,
-				b: 0
-			};	
-			var v = game.vectors.nweVector2(j, y);
-			v = v.subtract(tri.vertices[0]);
-			var l = v.length();
-			color.r = tri.vertices[0].color.red/l * 
-		}*/
-		for (var j = x1; j <= x2; j++ ) {
+		for (var j = x1; j <= x2; j++) {
+			var t1,t2,t3;
+			var a1,a2,a3;
+			var r1,r2,r3;
+			var color;
+			var v = game.vectors.newVector2(j, y);
+			t1 = game.polys.twodee.newTri([
+				v,
+				tri.vertices[0],
+				tri.vertices[1]
+			]);
+			t2 = game.polys.twodee.newTri([
+				v,
+				tri.vertices[1],
+				tri.vertices[2]
+			]);
+			t3 = game.polys.twodee.newTri([
+				v,
+				tri.vertices[2],
+				tri.vertices[0]
+			]);
+			a1 = t1.area();
+			a2 = t2.area();
+			a3 = t3.area();
+			r1 = a1/triArea;
+			r2 = a2/triArea;
+			r3 = a3/triArea;
+			color = {
+				red: (tri.vertices[0].color.red * r2) +
+						(tri.vertices[1].color.red * r3) +
+						(tri.vertices[2].color.red * r1),
+				blue: (tri.vertices[0].color.blue * r2) +
+						(tri.vertices[1].color.blue * r3) +
+						(tri.vertices[2].color.blue * r1),
+				green: (tri.vertices[0].color.green * r2) +
+						(tri.vertices[1].color.green * r3) +
+						(tri.vertices[2].color.green * r1),
+				alpha: 255
+			};
+
 			var pixelIndex = 4 * (j + y * imageData.width);
 			imageData.data[pixelIndex] = color.red;
 			imageData.data[pixelIndex+1] = color.green;
@@ -133,9 +160,47 @@ draw.fillTri = function(imageData, tri, color) {
 		x1 = x1 <= x2 ? x1 : x2;
 		x2 = temp <= x2 ? x2 : temp;
 		spanLength = x2-x1;
-		spans[i] = spanLength;
 
 		for (var j = x1; j <= x2; j++ ) {
+			var t1,t2,t3;
+			var a1,a2,a3;
+			var r1,r2,r3;
+			var color;
+			var v = game.vectors.newVector2(j, y);
+			t1 = game.polys.twodee.newTri([
+				v,
+				tri.vertices[0],
+				tri.vertices[1]
+			]);
+			t2 = game.polys.twodee.newTri([
+				v,
+				tri.vertices[1],
+				tri.vertices[2]
+			]);
+			t3 = game.polys.twodee.newTri([
+				v,
+				tri.vertices[2],
+				tri.vertices[0]
+			]);
+			a1 = t1.area();
+			a2 = t2.area();
+			a3 = t3.area();
+			r1 = a1/triArea;
+			r2 = a2/triArea;
+			r3 = a3/triArea;
+			color = {
+				red: (tri.vertices[0].color.red * r2) +
+						(tri.vertices[1].color.red * r3) +
+						(tri.vertices[2].color.red * r1),
+				blue: (tri.vertices[0].color.blue * r2) +
+						(tri.vertices[1].color.blue * r3) +
+						(tri.vertices[2].color.blue * r1),
+				green: (tri.vertices[0].color.green * r2) +
+						(tri.vertices[1].color.green * r3) +
+						(tri.vertices[2].color.green * r1),
+				alpha: 255
+			};
+
 			var pixelIndex = 4 * (j + y * imageData.width);
 			imageData.data[pixelIndex] = color.red;
 			imageData.data[pixelIndex+1] = color.green;

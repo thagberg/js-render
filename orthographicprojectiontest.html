@@ -66,6 +66,15 @@
 				green: 255,
 				alpha: 255
 			};
+			var triColor3 = {
+				red: 255,
+				green: 0,
+				blue: 0,
+				alpha: 255
+			};
+			colorTri.vertices[0].color = triColor3;
+			colorTri.vertices[1].color = triColor;
+			colorTri.vertices[2].color = triColor2;
 
 			var mU = game.vectors.newVector3(0,-2,0);
 			var mL = game.vectors.newVector3(-2,0,0);
@@ -190,8 +199,8 @@
 
 
 				// color the test tri
-				game.draw.fillTri(imageData, colorTri, triColor);
-				game.draw.fillTri(imageData, colorTri2, triColor2);
+				game.draw.fillTri(imageData, colorTri);
+				//game.draw.fillTri(imageData, colorTri2);
 
 				context.putImageData(imageData, 0, 0);
 
