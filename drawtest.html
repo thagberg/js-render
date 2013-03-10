@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Framework</title>	
+	<script type="text/javascript" src="src/game.js"></script>
+	<script type="text/javascript" src="src/vectors.js"></script>
+	<script type="text/javascript" src="src/matrices.js"></script>
+	<script type="text/javascript" src="src/polys.js"></script>
+	<script type="text/javascript" src="src/twodee.js"></script>
+	<script type="text/javascript" src="src/threedee.js"></script>
+	<script type="text/javascript" src="src/draw.js"></script>
+	<script type="text/javascript" src="src/line.js"></script>
+	<script>
+		window.onload = function() {
+			canvasApp();
+		}
+
+		function canvasApp() {
+			var theCanvas = document.getElementById("canvasOne");
+			if (!theCanvas || !theCanvas.getContext) {
+				return;
+			}
+
+			var width = 1000;
+			var height = 600;
+			context = theCanvas.getContext("2d");
+			imageData = context.createImageData(width, height);
+
+			tri = game.polys.twodee.newTri([
+				game.vectors.newVector2(100, 100),
+				game.vectors.newVector2(400, 100),
+				game.vectors.newVector2(250, 400)]);
+
+			c1 = {
+				red: 255,
+				green: 0,
+				blue: 0,
+				alpha: 255
+			};
+			c2 = {
+				red: 0,
+				green: 255,
+				blue: 0,
+				alpha: 255
+			};
+			c3 = {
+				red: 0,
+				green: 0,
+				blue: 255,
+				alpha: 255 
+			};
+			c4 = {
+				red: 0,
+				green: 0,
+				blue: 0,
+				alpha: 255
+			};
+
+			point = game.vectors.newVector2(200, 200);
+
+			t1 = game.polys.twodee.newTri([
+				point,
+				tri.vertices[0],
+				tri.vertices[1]
+			]);
+			t2 = game.polys.twodee.newTri([
+				point,
+				tri.vertices[1],
+				tri.vertices[2]
+			]);
+			t3 = game.polys.twodee.newTri([
+				point,
+				tri.vertices[2],
+				tri.vertices[0]
+			]);
+
+			triArea = tri.area();
+			a1 = t1.area();
+			a2 = t2.area();
+			a3 = t3.area();
+
+			drawScreen();
+
+			function drawScreen() {
+				game.draw.drawTri(imageData, tri, c4);
+				game.draw.drawTri(imageData, t1, c1);
+				game.draw.drawTri(imageData, t2, c2);
+				game.draw.drawTri(imageData, t3, c3);
+
+				context.putImageData(imageData, 0, 0);
+			}
+		}
+	</script>
+</head>
+<body>
+	<div style="position: absolute; top:50px; left:50px;">
+		<canvas id="canvasOne" width="1000" height="600">
+			Your browser does not support HTML5 Canvas
+		</canvas>
+	</div>
+</body>
+</html>
