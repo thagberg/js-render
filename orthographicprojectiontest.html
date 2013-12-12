@@ -16,6 +16,16 @@
 			canvasApp();
 		}
 
+		textureLoad = function(texImage) {
+			var texCanvas = document.createElement("canvas");	
+			texCanvas.width = texImage.width;
+			texCanvas.height = texImage.height;
+			texContext = texCanvas.getContext("2d");
+			texContext.drawImage(texImage, 0, 0);
+			var texData = texContext.getImageData(0, 0, texCanvas.width, texCanvas.height);
+			return texData;
+		}
+
 		function canvasApp() {
 			var canvas = document.getElementById("canvasOne");
 			if (!canvas || !canvas.getContext) {
@@ -27,6 +37,7 @@
 			var height = 600;
 
 			var imageData = context.createImageData(width, height);
+
 
 			const FRAMERATE = 60;
 			var intervalTime = 1000/FRAMERATE;
@@ -54,6 +65,12 @@
 				game.vectors.newVector2(700, 300),
 				game.vectors.newVector2(500, 600)]);
 
+			texTri = game.polys.twodee.newTri([
+				game.vectors.newVector2(400, 200),
+				game.vectors.newVector2(450, 250),
+				game.vectors.newVector2(350, 250)
+			]);
+
 			var triColor = {
 				red: 0,
 				blue: 255,
@@ -76,6 +93,10 @@
 			colorTri.vertices[1].color = triColor;
 			colorTri.vertices[2].color = triColor2;
 
+			texTri.vertices[0].tex = {x: 100, y: 0};
+			texTri.vertices[1].tex = {x: 200, y: 120};
+			texTri.vertices[2].tex = {x: 0, y: 120};
+
 			var mU = game.vectors.newVector3(0,-2,0);
 			var mL = game.vectors.newVector3(-2,0,0);
 			var mR = game.vectors.newVector3(2,0,0);
@@ -92,7 +113,7 @@
 			var triClockwise = false;
 			var triCoClockwise = false;
 
-			setInterval(update, intervalTime);
+			//setInterval(update, intervalTime);
 			var lastLoop = new Date;
 			var fps;
 
@@ -102,6 +123,15 @@
 				green: 0,
 				alpha: 255
 			};
+
+			// texture test stuff
+			var texImage = new Image();
+			texImage.src = "http://localhost:80/resources/texture.gif";
+			texData = null;
+			texImage.onload = function() {
+				texData = textureLoad(texImage);
+				setInterval(update, intervalTime);
+			}
 
 			function update() {
 				var thisLoop = new Date;
@@ -201,6 +231,7 @@
 				// color the test tri
 				game.draw.fillTri(imageData, colorTri);
 				//game.draw.fillTri(imageData, colorTri2);
+				game.draw.textureTri(imageData, texTri, texData);
 
 				context.putImageData(imageData, 0, 0);
 

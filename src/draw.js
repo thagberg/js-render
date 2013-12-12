@@ -168,3 +168,93 @@ draw.fillTri = function(imageData, tri) {
 		}
 	}
 };
+
+draw.textureTri = function(imageData, tri, texture) {
+	// first create edge list
+	var edges = tri.getEdges();
+
+	// draw from edges[0] to edges[1]
+	var l1, l2;
+	var numSpans;
+	var triArea = tri.area();
+
+	l1 = game.line.newLine2D(edges[0].p1, edges[0].p2);
+	l2 = game.line.newLine2D(edges[1].p1, edges[1].p2);
+	numSpans = l2.p2.y - l2.p1.y;
+	fillSpans();
+
+	l2 = game.line.newLine2D(edges[2].p1, edges[2].p2);
+	numSpans = l2.p2.y - l2.p1.y;	
+	fillSpans();
+
+	function fillSpans() {
+		if (l1.m == 0 || l2.m == 0) {
+			return;
+		}
+
+		// loop over the spans and draw the pixels
+		for (var i = 0; i <= numSpans; i++) {
+			var spanLength = 0;
+			var x1, x2, temp;
+			var y = l2.p2.y - i;
+			x1 = Math.round(l1.solveForX(y));
+			x2 = Math.round(l2.solveForX(y));
+			temp = x1;
+			x1 = x1 <= x2 ? x1 : x2;
+			x2 = temp <= x2 ? x2 : temp;
+			spanLength = x2-x1;
+
+			//TODO: add per-vector color and interpolation
+			for (var j = x1; j <= x2; j++) {
+				var t1,t2,t3;
+				var a1,a2,a3;
+				var r1,r2,r3;
+				var color = {red: 0, green: 0, blue: 0, alpha: 255};
+				var texel = {x: 0, y: 0};
+				var v = game.vectors.newVector2(j, y);
+				t1 = game.polys.twodee.newTri([
+					v,
+					tri.vertices[0],
+					tri.vertices[1]
+				]);
+				t2 = game.polys.twodee.newTri([
+					v,
+					tri.vertices[1],
+					tri.vertices[2]
+				]);
+				t3 = game.polys.twodee.newTri([
+					v,
+					tri.vertices[2],
+					tri.vertices[0]
+				]);
+				a1 = t1.area();
+				a2 = t2.area();
+				a3 = t3.area();
+				r1 = a1/triArea;
+				r2 = a2/triArea;
+				r3 = a3/triArea;
+				if (!isNaN(a1)) {
+					texel.x += tri.vertices[2].tex.x * r1;
+					texel.y += tri.vertices[2].tex.y * r1;
+				}
+				if (!isNaN(a2)) {
+					texel.x += tri.vertices[0].tex.x * r2;
+					texel.y += tri.vertices[0].tex.y * r2;
+				}
+				if (!isNaN(a3)) {
+					texel.x += tri.vertices[1].tex.x * r3;
+					texel.y += tri.vertices[1].tex.y * r3;
+				}
+				texel.x = Math.round(texel.x);
+				texel.y = Math.round(texel.y);
+
+				var pixelIndex = 4 * (j + y * imageData.width);
+				var texelIndex = 4 * (texel.x * texel.y);
+				imageData.data[pixelIndex] = texture.data[texelIndex];
+				imageData.data[pixelIndex+1] = texture.data[texelIndex+1];
+				imageData.data[pixelIndex+2] = texture.data[texelIndex+2];
+				imageData.data[pixelIndex+3] = texture.data[texelIndex+3];
+			}
+		}
+	}
+};
