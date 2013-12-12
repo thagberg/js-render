@@ -71,6 +71,18 @@
 				game.vectors.newVector2(350, 250)
 			]);
 
+			texTri2 = game.polys.twodee.newTri([
+				game.vectors.newVector2(500, 200),
+				game.vectors.newVector2(550, 250),
+				game.vectors.newVector2(450, 250)
+			]);
+
+			texTri3 = game.polys.twodee.newTri([
+				game.vectors.newVector2(600, 200),
+				game.vectors.newVector2(650, 250),
+				game.vectors.newVector2(550, 250)
+			]);
+
 			var triColor = {
 				red: 0,
 				blue: 255,
@@ -96,6 +108,14 @@
 			texTri.vertices[0].tex = {x: 100, y: 0};
 			texTri.vertices[1].tex = {x: 200, y: 120};
 			texTri.vertices[2].tex = {x: 0, y: 120};
+
+			texTri2.vertices[0].tex = {x: 200, y: 120};
+			texTri2.vertices[1].tex = {x: 100, y: 0};
+			texTri2.vertices[2].tex = {x: 0, y: 120};
+
+			texTri3.vertices[0].tex = {x: 0, y: 120};
+			texTri3.vertices[1].tex = {x: 200, y: 120};
+			texTri3.vertices[2].tex = {x:100, y: 0};
 
 			var mU = game.vectors.newVector3(0,-2,0);
 			var mL = game.vectors.newVector3(-2,0,0);
@@ -232,6 +252,8 @@
 				game.draw.fillTri(imageData, colorTri);
 				//game.draw.fillTri(imageData, colorTri2);
 				game.draw.textureTri(imageData, texTri, texData);
+				game.draw.textureTri(imageData, texTri2, texData);
+				game.draw.textureTri(imageData, texTri3, texData);
 
 				context.putImageData(imageData, 0, 0);
 

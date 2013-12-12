@@ -249,7 +249,7 @@ draw.textureTri = function(imageData, tri, texture) {
 				texel.y = Math.round(texel.y);
 
 				var pixelIndex = 4 * (j + y * imageData.width);
-				var texelIndex = 4 * (texel.x * texel.y);
+				var texelIndex = 4 * (texel.x + texel.y * texData.width)
 				imageData.data[pixelIndex] = texture.data[texelIndex];
 				imageData.data[pixelIndex+1] = texture.data[texelIndex+1];
 				imageData.data[pixelIndex+2] = texture.data[texelIndex+2];
