@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Framework</title>    
+    <script type="text/javascript" src="src/game.js"></script>
+    <script type="text/javascript" src="src/vectors.js"></script>
+    <script type="text/javascript" src="src/matrices.js"></script>
+    <script type="text/javascript" src="src/polys.js"></script>
+    <script type="text/javascript" src="src/twodee.js"></script>
+    <script type="text/javascript" src="src/threedee.js"></script>
+    <script type="text/javascript" src="src/draw.js"></script>
+    <script type="text/javascript" src="src/line.js"></script>
+    <script>
+        window.onload = function() {
+            canvasApp();
+        }
+
+        textureLoad = function(texImage) {
+            var texCanvas = document.createElement("canvas");   
+            texCanvas.width = texImage.width;
+            texCanvas.height = texImage.height;
+            texContext = texCanvas.getContext("2d");
+            texContext.drawImage(texImage, 0, 0);
+            var texData = texContext.getImageData(0, 0, texCanvas.width, texCanvas.height);
+            return texData;
+        }
+
+        function canvasApp() {
+            var canvas = document.getElementById("canvasOne");
+            if (!canvas || !canvas.getContext) {
+                return;
+            }
+            var context = canvas.getContext("2d");
+            var width = canvas.width;
+            var height = canvas.height;
+            var imageData = context.createImageData(width, height);
+
+            const FRAMERATE = 60;
+            var intervalTime = 1000/FRAMERATE;
+
+            // ***** Geometry Definitions ***** //
+            newQuad = game.polys.threedee.newQuad;
+            leftSide = newQuad([
+                game.vectors.newVector3(200, 100, 100),
+                game.vectors.newVector3(200, 100, -100),
+                game.vectors.newVector3(200, 300, -100),
+                game.vectors.newVector3(200, 300, 100)
+            ]);
+            frontSide = newQuad([
+                game.vectors.newVector3(200, 100, -100),
+                game.vectors.newVector3(400, 100, -100),
+                game.vectors.newVector3(400, 300, -100),
+                game.vectors.newVector3(200, 300, -100)
+            ]);
+            rightSide = newQuad([
+                game.vectors.newVector3(400, 100, -100),
+                game.vectors.newVector3(400, 100, 100),
+                game.vectors.newVector3(400, 300, 100),
+                game.vectors.newVector3(400, 300, -100)
+            ]);
+            backSide = newQuad([
+                game.vectors.newVector3(400, 100, 100),
+                game.vectors.newVector3(200, 100, 100),
+                game.vectors.newVector3(200, 300, 100),
+                game.vectors.newVector3(400, 300, 100)
+            ]);
+            topSide = newQuad([
+                game.vectors.newVector3(200, 100, 100),
+                game.vectors.newVector3(400, 100, 100),
+                game.vectors.newVector3(400, 100, -100),
+                game.vectors.newVector3(200, 100, -100)
+            ]);
+            bottomSide = newQuad([
+                game.vectors.newVector3(200, 300, -100),
+                game.vectors.newVector3(400, 300, -100),
+                game.vectors.newVector3(400, 300, 100),
+                game.vectors.newVector3(200, 300, 100)
+            ]);
+            quads = [leftSide,frontSide,rightSide,backSide,topSide,bottomSide];
+
+            frontSide.vertices[0].tex = {x:0, y:0};
+            frontSide.vertices[1].tex = {x:200, y:0};
+            frontSide.vertices[2].tex = {x:200, y:200};
+            frontSide.vertices[3].tex = {x:0, y:200};
+
+            var turnClockwise = false;
+            var turnCoClockwise = false;
+            var rotateUp = false;
+            var rotateDown = false;
+
+            var texImage = new Image();
+            texImage.src = "http://localhost:80/resources/texture.gif";
+            texData = null;
+            texImage.onload = function() {
+                texData = textureLoad(texImage);
+                setInterval(update, intervalTime);
+            }
+
+            function update() {
+                if (turnClockwise) {
+                    for (var i = 0; i < quads.length; i++) {
+                        quads[i].rotateY(-2);
+                    }
+                }
+                if (turnCoClockwise) {
+                    for (var i = 0; i < quads.length; i++) {
+                        quads[i].rotateY(2);
+                    }
+                }
+                if (rotateUp) {
+                    for (var i = 0; i < quads.length; i++) {
+                        quads[i].rotateX(2);
+                    }
+                }
+                if (rotateDown) {
+                    for (var i = 0; i < quads.length; i++) {
+                        quads[i].rotateX(-2);
+                    }
+                }
+                drawScreen();
+            }
+
+            function drawScreen() {
+                context.clearRect(0,0,width,height);
+                imageData = context.createImageData(width, height);
+
+                color = {
+                    red: 255,
+                    green: 0,
+                    blue: 0,
+                    alpha: 255
+                };
+
+                drawLine = game.draw.drawLine2D;
+                drawQuad = game.draw.drawQuad;
+                textureQuad = game.draw.textureQuad;
+                drawQuad(imageData, leftSide, color);
+                //drawQuad(imageData, frontSide, color);
+                drawQuad(imageData, rightSide, color);
+                drawQuad(imageData, backSide, color);
+                drawQuad(imageData, topSide, color);
+                drawQuad(imageData, bottomSide, color);
+                textureQuad(imageData, frontSide, texData);
+
+                context.putImageData(imageData, 0, 0);
+            }
+
+            document.addEventListener("keydown", function(e) {
+                switch(e.keyCode) {
+                    case 69:
+                        turnClockwise = true;
+                        break;
+                    case 81:
+                        turnCoClockwise = true;
+                        break;
+                    case 90:
+                        rotateUp = true;
+                        break;
+                    case 67:
+                        rotateDown = true;
+                    default:
+                        break
+                }
+            });
+            document.addEventListener("keyup", function(e) {
+                switch(e.keyCode) {
+                    case 69:
+                        turnClockwise = false;
+                        break;
+                    case 81:
+                        turnCoClockwise = false;
+                        break;
+                    case 90:
+                        rotateUp = false;
+                        break;
+                    case 67:
+                        rotateDown = false;
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <div style="position: absolute; top:50px; left:50px;">
+        <canvas id="canvasOne" width="1000" height="600">
+            Your browser does not support HTML5 Canvas
+        </canvas>
+    </div>
+</body>
+</html>

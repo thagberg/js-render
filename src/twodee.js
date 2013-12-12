@@ -80,19 +80,21 @@ twodee.Tri = {
     },
 
     area: function() {
-        var a = this.vertices[1].subtract(this.vertices[0]).length();
-        var b = this.vertices[2].subtract(this.vertices[1]).length();
-        var c = this.vertices[0].subtract(this.vertices[2]).length();
+        if (!this.calclated_area) {
+            var a = this.vertices[1].subtract(this.vertices[0]).length();
+            var b = this.vertices[2].subtract(this.vertices[1]).length();
+            var c = this.vertices[0].subtract(this.vertices[2]).length();
 
-        // c^2 = a^2 + b^2 - 2abCos(C)
-        // 2abCos(C) = a^2 + b^2 - c^2
-        // Cos(C) = (a^2 + b^2 - c^2) / 2ab
-        var cosC = ((Math.pow(a,2) + Math.pow(b, 2) - Math.pow(c,2)) /
-                        (2 * a * b)) * (a/a * b/b * c/c);
-        var C = Math.acos(cosC);
-        var A = 0.5 * a * b * Math.sin(C);
+            // c^2 = a^2 + b^2 - 2abCos(C)
+            // 2abCos(C) = a^2 + b^2 - c^2
+            // Cos(C) = (a^2 + b^2 - c^2) / 2ab
+            var cosC = ((Math.pow(a,2) + Math.pow(b, 2) - Math.pow(c,2)) /
+                            (2 * a * b)) * (a/a * b/b * c/c);
+            var C = Math.acos(cosC);
+            this.calculated_area = 0.5 * a * b * Math.sin(C);
+        }
 
-        return A;
+        return this.calculated_area;
     }
 };
 

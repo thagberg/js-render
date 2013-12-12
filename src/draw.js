@@ -75,9 +75,17 @@ draw.drawTri = function(imageData, tri, color) {
 
 	var edges = tri.getEdges();
 
-	draw.drawLine2D(imageData, edges[0].p1, edges[0].p2, color);
-	draw.drawLine2D(imageData, edges[1].p1, edges[1].p2, color);
-	draw.drawLine2D(imageData, edges[2].p1, edges[2].p2, color);
+	for (var i = 0; i < edges.length; i++) {
+		draw.drawLine2D(imageData, edges[i].p1, edges[i].p2, color);
+	}
+};
+
+draw.drawQuad = function(imageData, quad, color) {
+	var edges = quad.getEdges();
+
+	for (var i = 0; i < edges.length; i++) {
+		draw.drawLine2D(imageData, edges[i].p1, edges[i].p2, color);
+	}
 };
 
 draw.fillTri = function(imageData, tri) {
@@ -169,6 +177,12 @@ draw.fillTri = function(imageData, tri) {
 	}
 };
 
+draw.fillQuad = function(imageData, quad) {
+	var tris = quad.getTris();
+	draw.fillTri(imageData, tris[0]);
+	draw.fillTri(imageData, tris[1]);	
+}
+
 draw.textureTri = function(imageData, tri, texture) {
 	// first create edge list
 	var edges = tri.getEdges();
@@ -211,7 +225,7 @@ draw.textureTri = function(imageData, tri, texture) {
 				var r1,r2,r3;
 				var color = {red: 0, green: 0, blue: 0, alpha: 255};
 				var texel = {x: 0, y: 0};
-				var v = game.vectors.newVector2(j, y);
+				var v = game.vectors.newVector3(j, y, 0);
 				t1 = game.polys.twodee.newTri([
 					v,
 					tri.vertices[0],
@@ -257,4 +271,10 @@ draw.textureTri = function(imageData, tri, texture) {
 			}
 		}
 	}
+};
+
+draw.textureQuad = function(imageData, quad, texture) {
+	var tris = quad.getTris();
+	draw.textureTri(imageData, tris[0], texture);
+	//draw.textureTri(imageData, tris[1], texture);
 };
