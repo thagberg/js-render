@@ -130,42 +130,25 @@ draw.fillTri = function(imageData, tri) {
 				var r1,r2,r3;
 				var color = {red: 0, green: 0, blue: 0, alpha: 255};
 				var v = game.vectors.newVector2(j, y);
-				t1 = game.polys.twodee.newTri([
-					v,
-					tri.vertices[0],
-					tri.vertices[1]
-				]);
-				t2 = game.polys.twodee.newTri([
-					v,
-					tri.vertices[1],
-					tri.vertices[2]
-				]);
-				t3 = game.polys.twodee.newTri([
-					v,
-					tri.vertices[2],
-					tri.vertices[0]
-				]);
-				a1 = t1.area();
-				a2 = t2.area();
-				a3 = t3.area();
-				r1 = a1/triArea;
-				r2 = a2/triArea;
-				r3 = a3/triArea;
-				if (!isNaN(a1)) {
-					color.red += tri.vertices[2].color.red * r1;
-					color.green += tri.vertices[2].color.green * r1;
-					color.blue += tri.vertices[2].color.blue * r1;
-				}
-				if (!isNaN(a2)) {
-					color.red += tri.vertices[0].color.red * r2;
-					color.green += tri.vertices[0].color.green * r2;
-					color.blue += tri.vertices[0].color.blue * r2;
-				}
-				if (!isNaN(a3)) {
-					color.red += tri.vertices[1].color.red * r3;
-					color.green += tri.vertices[1].color.green * r3;
-					color.blue += tri.vertices[1].color.blue * r3;
-				}
+				var d1 = tri.vertices[0].subtract(v).length();
+				var d2 = tri.vertices[1].subtract(v).length();
+				var d3 = tri.vertices[2].subtract(v).length();
+				var dsum = d1+d2+d3;
+				d1 = dsum/d1;
+				d2 = dsum/d2;
+				d3 = dsum/d3;
+
+				color.red += tri.vertices[0].color.red * (d1);
+				color.green += tri.vertices[0].color.green * (d1);
+				color.blue += tri.vertices[0].color.blue * (d1);
+
+				color.red += tri.vertices[1].color.red * (d2);
+				color.green += tri.vertices[1].color.green * (d2);
+				color.blue += tri.vertices[1].color.blue * (d2);
+
+				color.red += tri.vertices[2].color.red * (d3);
+				color.green += tri.vertices[2].color.green * (d3);
+				color.blue += tri.vertices[2].color.blue * (d3);
 
 				var pixelIndex = 4 * (j + y * imageData.width);
 				imageData.data[pixelIndex] = color.red;
@@ -226,39 +209,16 @@ draw.textureTri = function(imageData, tri, texture) {
 				var color = {red: 0, green: 0, blue: 0, alpha: 255};
 				var texel = {x: 0, y: 0};
 				var v = game.vectors.newVector3(j, y, 0);
-				t1 = game.polys.twodee.newTri([
-					v,
-					tri.vertices[0],
-					tri.vertices[1]
-				]);
-				t2 = game.polys.twodee.newTri([
-					v,
-					tri.vertices[1],
-					tri.vertices[2]
-				]);
-				t3 = game.polys.twodee.newTri([
-					v,
-					tri.vertices[2],
-					tri.vertices[0]
-				]);
-				a1 = t1.area();
-				a2 = t2.area();
-				a3 = t3.area();
-				r1 = a1/triArea;
-				r2 = a2/triArea;
-				r3 = a3/triArea;
-				if (!isNaN(a1)) {
-					texel.x += tri.vertices[2].tex.x * r1;
-					texel.y += tri.vertices[2].tex.y * r1;
-				}
-				if (!isNaN(a2)) {
-					texel.x += tri.vertices[0].tex.x * r2;
-					texel.y += tri.vertices[0].tex.y * r2;
-				}
-				if (!isNaN(a3)) {
-					texel.x += tri.vertices[1].tex.x * r3;
-					texel.y += tri.vertices[1].tex.y * r3;
-				}
+				var d1 = tri.vertices[0].subtract(v).length();
+				var d2 = tri.vertices[1].subtract(v).length();
+				var d3 = tri.vertices[2].subtract(v).length();
+				var dsum = d1+d2+d3;
+				texel.x += tri.vertices[0].tex.x * d1/dsum;
+				texel.y += tri.vertices[0].tex.y * d1/dsum;
+				texel.x += tri.vertices[1].tex.x * d2/dsum;
+				texel.y += tri.vertices[1].tex.y * d2/dsum;
+				texel.x += tri.vertices[2].tex.x * d3/dsum;
+				texel.y += tri.vertices[2].tex.y * d3/dsum;
 				texel.x = Math.round(texel.x);
 				texel.y = Math.round(texel.y);
 
@@ -276,5 +236,5 @@ draw.textureTri = function(imageData, tri, texture) {
 draw.textureQuad = function(imageData, quad, texture) {
 	var tris = quad.getTris();
 	draw.textureTri(imageData, tris[0], texture);
-	//draw.textureTri(imageData, tris[1], texture);
+	draw.textureTri(imageData, tris[1], texture);
 };

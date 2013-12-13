@@ -6,19 +6,31 @@ threedee.Quad = {
     rotateX: function(theta) {
 
     	for (var i = 0; i < this.vertices.length; i++) {
-    		this.vertices[i] = this.vertices[i].rotateX(theta);
+            var c = this.vertices[i].color;
+            var t = this.vertices[i].tex;
+            this.vertices[i] = this.vertices[i].rotateX(theta);
+            this.vertices[i].color = c;
+            this.vertices[i].tex = t;
     	}
     },
 
     rotateY: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
-    		this.vertices[i] = this.vertices[i].rotateY(theta);
+            var c = this.vertices[i].color;
+            var t = this.vertices[i].tex;
+            this.vertices[i] = this.vertices[i].rotateY(theta);
+            this.vertices[i].color = c;
+            this.vertices[i].tex = t;
     	}
     },
 
     rotateZ: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
-    		this.vertices[i] = this.vertices[i].rotateZ(theta);
+            var c = this.vertices[i].color;
+            var t = this.vertices[i].tex;
+            this.vertices[i] = this.vertices[i].rotateZ(theta);
+            this.vertices[i].color = c;
+            this.vertices[i].tex = t;
     	}
     },
 
@@ -109,19 +121,31 @@ threedee.Tri = {
 
     rotateX: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
+            var c = this.vertices[i].color;
+            var t = this.vertices[i].tex;
     		this.vertices[i] = this.vertices[i].rotateX(theta);
+            this.vertices[i].color = c;
+            this.vertices[i].tex = t;
     	}
     },
 
     rotateY: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
-    		this.vertices[i] = this.vertices[i].rotateY(theta);
+            var c = this.vertices[i].color;
+            var t = this.vertices[i].tex;
+            this.vertices[i] = this.vertices[i].rotateY(theta);
+            this.vertices[i].color = c;
+            this.vertices[i].tex = t;
     	}
     },
 
     rotateZ: function(theta) {
     	for (var i = 0; i < this.vertices.length; i++) {
-    		this.vertices[i] = this.vertices[i].rotateZ(theta);
+            var c = this.vertices[i].color;
+            var t = this.vertices[i].tex;
+            this.vertices[i] = this.vertices[i].rotateZ(theta);
+            this.vertices[i].color = c;
+            this.vertices[i].tex = t;
     	}
     },
 

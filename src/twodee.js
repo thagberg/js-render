@@ -32,9 +32,15 @@ twodee.Tri = {
             if (this.vertices[i].color) {
                 var c = this.vertices[i].color;
             }
+            if (this.vertices[i].tex) {
+                var t = this.vertices[i].tex;
+            }
     		this.vertices[i] = this.vertices[i].rotate(theta);
             if (c) {
                 this.vertices[i].color = c;
+            }
+            if (t) {
+                this.vertices[i].tex = t;
             }
     	}
     },
@@ -44,9 +50,15 @@ twodee.Tri = {
             if (this.vertices[i].color) {
                 var c = this.vertices[i].color;
             }
+            if (this.vertices[i].tex) {
+                var t = this.vertices[i].tex;
+            }
             this.vertices[i] = this.vertices[i].translate(v2);
             if (c) {
                 this.vertices[i].color = c;
+            }
+            if (t) {
+                this.vertices[i].tex = t;
             }
         }
     },
